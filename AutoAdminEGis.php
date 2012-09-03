@@ -14,7 +14,7 @@ class AutoAdminEGis implements AutoAdminIExtension
 		Yii::import('application.extensions.autoAdminEGis.models.fields.*');
 		Yii::import('');
 		self::$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.extensions.autoAdminEGis.assets'));
-		Yii::app()->clientScript->registerCssFile(self::$assetPath.'/gisfields.css');
+		Yii::app()->clientScript->registerCssFile(self::$assetPath.'/css/gisfields.css');
 	}
 
 	/**

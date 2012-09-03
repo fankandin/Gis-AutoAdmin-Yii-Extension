@@ -60,6 +60,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Longitude'), "{$inputName}[lon]");
 		$tagOptions['id'] = "{$inputName}[lon]";
 		echo CHtml::textField($tagOptions['id'], (isset($this->value['coordinates'][0]) ? $this->value['coordinates'][0] : $this->defaultValue['lon']), $tagOptions);
+		echo CHtml::tag('span', array('class'=>'indmap', 'title'=>Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map')));
 
 		return ob_get_clean();
 	}

@@ -1,0 +1,3 @@
+#editform .item.block_GisPoint b {display: block; margin-bottom: 5px;}
+#editform .item.block_GisPoint input {width: 30%; margin-left: 7px; margin-right: 20px;}
+#editform .item.block_GisPoint .indmap {background: url('../images/map-search.png') no-repeat; cursor: pointer; display: inline-block; width: 24px; height: 24px; overflow: hidden; vertical-align: middle;}
