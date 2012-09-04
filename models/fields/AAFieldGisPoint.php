@@ -1,6 +1,6 @@
 <?php
 /**
- * Numeric field
+ * The Geometry Point field.
  *
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
@@ -23,11 +23,11 @@ class AAFieldGisPoint extends AAField implements AAIField
 					break;
 				}
 			}
-			foreach(array(1, 'lon', 'longitude') as $latKey)
+			foreach(array(1, 'lon', 'longitude') as $lonKey)
 			{
-				if(isset($this->defaultValue[$latKey]))
+				if(isset($this->defaultValue[$lonKey]))
 				{
-					$defaultValue['lon'] = $this->defaultValue[$latKey];
+					$defaultValue['lon'] = $this->defaultValue[$lonKey];
 					break;
 				}
 			}
@@ -41,7 +41,9 @@ class AAFieldGisPoint extends AAField implements AAIField
 	{
 		if(isset($queryValue[$this->name]))
 		{
-			$this->value = CJSON::decode($queryValue[$this->name]);
+			$this->value = new EGeoPoint();
+			$this->value->setSrid($queryValue["{$this->name}_srid"]);
+			$this->value->loadFromGeoJson($queryValue[$this->name]);
 		}
 	}
 
@@ -54,13 +56,24 @@ class AAFieldGisPoint extends AAField implements AAIField
 			$tagOptions['disabled'] = true;
 		$tagOptions['pattern'] = '[0-9]+(\.[0-9]+)?';
 
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Latitude'), "{$inputName}[lat]");
-		$tagOptions['id'] = "{$inputName}[lat]";
-		echo CHtml::textField($tagOptions['id'], (isset($this->value['coordinates'][1]) ? $this->value['coordinates'][1] : $this->defaultValue['lat']), $tagOptions);
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Longitude'), "{$inputName}[lon]");
+		$defaultCoords = $this->value ? $this->value->get() : null;
 		$tagOptions['id'] = "{$inputName}[lon]";
-		echo CHtml::textField($tagOptions['id'], (isset($this->value['coordinates'][0]) ? $this->value['coordinates'][0] : $this->defaultValue['lon']), $tagOptions);
-		echo CHtml::tag('span', array('class'=>'indmap', 'title'=>Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map')));
+		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Longitude)'), $tagOptions['id']);
+		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->x : $this->defaultValue['lon']), $tagOptions);
+		$tagOptions['id'] = "{$inputName}[lat]";
+		$tagOptions['tabindex']++;
+		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Latitude)'), $tagOptions['id']);
+		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->y : $this->defaultValue['lat']), $tagOptions);
+		$tagOptions['id'] = "{$inputName}[srid]";
+		unset($tagOptions['tabindex']);
+		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'SRID'), $tagOptions['id']);
+		echo CHtml::textField($tagOptions['id'], ($this->value ? $this->value->getSrid() : (!empty($this->options['srid']) ? $this->options['srid'] : EGeo::$srid)), $tagOptions);
+		echo CHtml::tag('span', array(
+				'class' => 'indmap',
+				'id'	=> "{$inputName}_indmap",
+				'title' => Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map'),
+				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-point.html#'+this.id, 'wGisPointMap', 'width=700,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
+			));
 
 		return ob_get_clean();
 	}
@@ -69,7 +82,8 @@ class AAFieldGisPoint extends AAField implements AAIField
 	{
 		if($this->value)
 		{
-			return sprintf("[%f; %f]", $this->value['coordinates'][1], $this->value['coordinates'][0]);
+			$coords = $this->value->get();
+			return "[{$coords->lon}; {$coords->lat}]";
 		}
 		else
 			return null;
@@ -83,10 +97,10 @@ class AAFieldGisPoint extends AAField implements AAIField
 		}
 		else
 		{
-			$this->value = array(
-				'type' => 'Point',
-				'coordinates' => array((double)$formData[$this->name]['lon'], (double)$formData[$this->name]['lat'])
-			);
+			$this->value = new EGeoPoint();
+			$this->value->set(new EGeoCoords($formData[$this->name]['lon'], $formData[$this->name]['lat']));
+			if(!empty($formData[$this->name]['srid']))
+				$this->value->setSrid($formData[$this->name]['srid']);
 		}
 	}
 
@@ -98,7 +112,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 			if(!$value)
 				$value = new CDbExpression("NULL");
 			else
-				$value = new CDbExpression("ST_SetSRID(ST_GeomFromGeoJSON('".CJSON::encode($value)."'), ".AutoAdminEGis::GEO_SRID.")");
+				$value = new CDbExpression("ST_SetSRID(ST_GeomFromGeoJSON('".$value->exportAsGeoJson()."'), ".$value->getSrid().")");
 		}
 		return $value;
 	}
@@ -112,6 +126,9 @@ class AAFieldGisPoint extends AAField implements AAIField
 
 	public function modifySqlQuery()
 	{
-		return array('select' => array(new CDbExpression("ST_AsGeoJson({$this->tableName}.{$this->name}) AS {$this->name}")));
+		return array('select' => array(
+				new CDbExpression("ST_AsGeoJson({$this->tableName}.{$this->name}) AS {$this->name}"),
+				new CDbExpression("ST_SRID({$this->tableName}.{$this->name}) AS {$this->name}_srid"),
+			));
 	}
 }

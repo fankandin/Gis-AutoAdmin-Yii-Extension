@@ -6,14 +6,23 @@
  */
 class AutoAdminEGis implements AutoAdminIExtension
 {
-	const GEO_SRID = 4326;
+	public static $srid = 4326;
+	public static $extPath = 'application.extensions.autoAdminEGis';
 	public static $assetPath;
 
-	public static function init()
+	public static function init($initData=array())
 	{
-		Yii::import('application.extensions.autoAdminEGis.models.fields.*');
-		Yii::import('');
-		self::$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.extensions.autoAdminEGis.assets'));
+		if($initData)
+		{
+			foreach($initData as $param=>$value)
+			{
+				if(property_exists('AutoAdminEGis', $param))
+					self::$$param = $value;
+			}
+		}
+		Yii::import(self::$extPath.'.models.fields.*');
+		Yii::import(self::$extPath.'.models.geo.*');
+		self::$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias(self::$extPath.'.assets'));
 		Yii::app()->clientScript->registerCssFile(self::$assetPath.'/css/gisfields.css');
 	}
 
