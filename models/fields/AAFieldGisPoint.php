@@ -43,7 +43,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 		{
 			$this->value = new EGeoPoint();
 			$this->value->setSrid($queryValue["{$this->name}_srid"]);
-			$this->value->loadFromGeoJson($queryValue[$this->name]);
+			$this->value->loadFromWKT($queryValue[$this->name]);
 		}
 	}
 
@@ -112,7 +112,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 			if(!$value)
 				$value = new CDbExpression("NULL");
 			else
-				$value = new CDbExpression("ST_SetSRID(ST_GeomFromGeoJSON('".$value->exportAsGeoJson()."'), ".$value->getSrid().")");
+				$value = new CDbExpression(AutoAdminEGis::$sql->geomFromText($value->exportAsWKT(), $value->getSrid()));
 		}
 		return $value;
 	}
@@ -127,8 +127,8 @@ class AAFieldGisPoint extends AAField implements AAIField
 	public function modifySqlQuery()
 	{
 		return array('select' => array(
-				new CDbExpression("ST_AsGeoJson({$this->tableName}.{$this->name}) AS {$this->name}"),
-				new CDbExpression("ST_SRID({$this->tableName}.{$this->name}) AS {$this->name}_srid"),
+				new CDbExpression(AutoAdminEGis::$sql->asText("{$this->tableName}.{$this->name}")." AS {$this->name}"),
+				new CDbExpression(AutoAdminEGis::$sql->getSrid("{$this->tableName}.{$this->name}")." AS {$this->name}_srid"),
 			));
 	}
 }
