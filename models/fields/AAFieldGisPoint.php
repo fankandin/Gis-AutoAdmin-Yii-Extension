@@ -67,7 +67,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 		$tagOptions['id'] = "{$inputName}[srid]";
 		unset($tagOptions['tabindex']);
 		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'SRID'), $tagOptions['id']);
-		echo CHtml::textField($tagOptions['id'], ($this->value ? $this->value->getSrid() : (!empty($this->options['srid']) ? $this->options['srid'] : EGeo::$srid)), $tagOptions);
+		echo CHtml::textField($tagOptions['id'], ($this->value ? $this->value->getSrid() : (!empty($this->options['srid']) ? $this->options['srid'] : EGeo::SRID_GPS)), $tagOptions);
 		echo CHtml::tag('span', array(
 				'class' => 'indmap',
 				'id'	=> "{$inputName}_indmap",
