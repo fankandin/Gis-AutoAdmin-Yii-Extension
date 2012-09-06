@@ -1,47 +1,25 @@
 <?php
 /**
- * The Geometry Point field.
- *
+ * The Geometry Linestring field.
+ * 
+ * This field does not accept a default value.
+ * 
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-class AAFieldGisPoint extends AAField implements AAIField
+class AAFieldGisLinestring extends AAField
 {
-	public $type='GisPoint';
+	public $type='GisLinestring';
 
 	public function completeOptions()
 	{
-		if(!empty($this->defaultValue))
-		{
-			if(!is_array($this->defaultValue) || count($this->defaultValue) > 2)
-				throw new AAException(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'The parameter "defaultValue" is set incorrectly for the field {fieldName}', array('{fieldName}'=>$this->name)));
-			$defaultValue = array();
-			foreach(array(0, 'lat', 'latitude') as $latKey)
-			{
-				if(isset($this->defaultValue[$latKey]))
-				{
-					$defaultValue['lat'] = $this->defaultValue[$latKey];
-					break;
-				}
-			}
-			foreach(array(1, 'lon', 'longitude') as $lonKey)
-			{
-				if(isset($this->defaultValue[$lonKey]))
-				{
-					$defaultValue['lon'] = $this->defaultValue[$lonKey];
-					break;
-				}
-			}
-			if(!isset($defaultValue['lat']) || !isset($defaultValue['lon']))
-				throw new AAException(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'The parameter "defaultValue" is set incorrectly for the field {fieldName}', array('{fieldName}'=>$this->name)));
-			$this->defaultValue = $defaultValue;
-		}
+		$this->defaultValue = null;
 	}
 
 	public function loadFromSql($queryValue)
 	{
 		if(isset($queryValue[$this->name]))
 		{
-			$this->value = new EGeoPoint();
+			$this->value = new EGeoLinestring();
 			$this->value->setSrid($queryValue["{$this->name}_srid"]);
 			$this->value->loadFromWKT($queryValue[$this->name]);
 		}
@@ -52,7 +30,14 @@ class AAFieldGisPoint extends AAField implements AAIField
 		if($this->value)
 		{
 			$coords = $this->value->get();
-			return "[{$coords->lon}; {$coords->lat}]";
+			$s = '';
+			foreach($coords as $coord)
+			{
+				$s .= "[{$coord->lon}; {$coord->lat}], ";
+			}
+			if($s)
+				$s = '('.rtrim($s, ', ').')';
+			return $s;
 		}
 		else
 			return null;
@@ -69,15 +54,32 @@ class AAFieldGisPoint extends AAField implements AAIField
 		$tagOptions['pattern'] = '[0-9]+(\.[0-9]+)?';
 
 		$defaultCoords = $this->value ? $this->value->get() : null;
-		$tagOptions['id'] = "{$inputName}[lon]";
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Longitude)'), $tagOptions['id']);
-		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->x : $this->defaultValue['lon']), $tagOptions);
-		$tagOptions['id'] = "{$inputName}[lat]";
-		$tagOptions['tabindex']++;
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Latitude)'), $tagOptions['id']);
-		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->y : $this->defaultValue['lat']), $tagOptions);
+		$n = count($defaultCoords);
+		echo CHtml::openTag('div', array('class'=>'coords'));
+		echo CHtml::openTag('ol');
+		for($i=0; $i<$n; $i++)
+		{
+			echo CHtml::openTag('li', array('class'=>'coords-row', 'row-i'=>$i));
+			$coords = $i+1<$n ? $defaultCoords[$i] : null;
+			$tagOptions['id'] = "{$inputName}[lon][{$i}]";
+			$tagOptions['tabindex']++;
+			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Longitude)'), $tagOptions['id']);
+			echo CHtml::textField($tagOptions['id'], ($coords ? $coords->x : null), $tagOptions);
+			$tagOptions['id'] = "{$inputName}[lat][{$i}]";
+			$tagOptions['tabindex']++;
+			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Latitude)'), $tagOptions['id']);
+			echo CHtml::textField($tagOptions['id'], ($coords ? $coords->y : null), $tagOptions);
+			echo CHtml::tag('span', array('class'=>'delrow', 'title'=>Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Delete this row')), '');
+			echo CHtml::closeTag('li');
+		}
+		echo CHtml::closeTag('ol');
+		echo CHtml::tag('span', array('class'=>'newrow', 'title'=>Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Add a new row')), '');
+		echo CHtml::closeTag('div');
+		echo CHtml::tag('div', array('class'=>'collapse'), '');
+
 		$tagOptions['id'] = "{$inputName}[srid]";
 		unset($tagOptions['tabindex']);
+		echo CHtml::openTag('div', array('class'=>'coords-manage'));
 		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'SRID'), $tagOptions['id']);
 		echo CHtml::textField($tagOptions['id'], ($this->value ? $this->value->getSrid() : (!empty($this->options['srid']) ? $this->options['srid'] : EGeo::SRID_GPS)), $tagOptions);
 		echo CHtml::tag('span', array(
@@ -86,6 +88,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 				'title' => Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map'),
 				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-".strtolower(substr($this->type, 3)).".html#'+this.id, 'w{$this->type}Map', 'width=700,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
 			), '');
+		echo CHtml::closeTag('div');
 
 		return ob_get_clean();
 	}

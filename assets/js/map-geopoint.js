@@ -1,6 +1,3 @@
-var Map;
-var geocoder;
-
 function geocodePosition(pos)
 {
 	geocoder.geocode({latLng: pos},	function(responses) {
@@ -27,8 +24,21 @@ function updateMarkerAddress(str)
 	$('#address').html(str);
 }
 
-google.load('maps', '3', {'other_params': 'sensor=false'});
+function backupCoords()
+{
+	backupData = [$lon.val(), $lat.val()];
+}
+
+function undoCoords()
+{
+	$lon.val(backupData[0]);
+	$lat.val(backupData[1]);
+}
+
 $(document).ready(function() {
+	backupCoords()
+	$('#undo').click(undoCoords);
+
 	var center;
 	var defCoords = false;
 	if($srid.val() == '4326')
@@ -48,6 +58,7 @@ $(document).ready(function() {
 			zoom: 5,
 			mapTypeId: google.maps.MapTypeId['TERRAIN']
 		});
+	initLatLngControl(Map);
 	if(defCoords)
 	{
 		var pointOpts = {

@@ -1,4 +1,15 @@
-#editform .item.block_GisPoint b {display: block; margin-bottom: 5px;}
-#editform input[id="AA[geo_center_point][lat]"], #editform input[id="AA[geo_center_point][lon]"] {width: 20%; margin-left: 7px; margin-right: 20px;}
-#editform input[id="AA[geo_center_point][srid]"] {width: 40px; margin-left: 7px; margin-right: 20px;}
-#editform .item.block_GisPoint .indmap {background: url('../images/map-search.png') no-repeat; cursor: pointer; display: inline-block; width: 24px; height: 24px; overflow: hidden; vertical-align: middle;}
+#editform .item[class*="block_Gis"] b {display: block;}
+#editform .item[class*="block_Gis"] .desc {margin: 10px 0 0; font-size: 100%;}
+#editform .item[class*="block_Gis"] input[name*="[lat]"], #editform .item[class*="block_Gis"] input[name*="[lon]"] {width: 20%; margin-left: 7px; margin-right: 20px;}
+#editform .item[class*="block_Gis"] input[name$="[srid]"] {width: 40px; margin-left: 7px; margin-right: 20px;}
+#editform .item[class*="block_Gis"] .indmap {background: url('../images/map-search.png') no-repeat; cursor: pointer; display: inline-block; width: 24px; height: 24px; overflow: hidden; vertical-align: middle;}
+#editform .item .coords {display: inline-block; width: 66%; max-height: 120px; overflow-y: scroll; border: 1px solid #c0c0c0; background: #fefefe; margin: 10px 0 0;}
+#editform .item .coords ol {margin: 0;}
+#editform .item .coords.opened {overflow-y: visible; max-height: none;}
+#editform .item .coords-row {border-bottom: 1px solid #e0e0e0;}
+#editform .item .collapse {display: inline-block; vertical-align: bottom; width: 16px; height: 16px; margin: 0 10px 0 5px; overflow: hidden; background: url('../images/collapse.png'); cursor: pointer;}
+#editform .item .collapse:hover {box-shadow: 0 0 2px rgba(255, 0, 0, 0.4);}
+#editform .item .collapse.opened {background-position: 0 -16px;}
+#editform .item .coords-manage {display: inline-block; vertical-align: top;}
+#editform .item .coords .newrow {display: block; width: 48px; height: 48px; margin-left: 80%; overflow: hidden; cursor: pointer; background: url('../images/addrow.png') no-repeat;}
+#editform .item .coords .delrow {display: inline-block; width: 16px; height: 16px; overflow: hidden; cursor: pointer; background: url('../images/x.png') no-repeat;}
