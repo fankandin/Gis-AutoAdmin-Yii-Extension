@@ -32,13 +32,8 @@ function figureOnDraw(figure)
 		removeFigure();	//for previously drawn.
 	drawingManager.setOptions({drawingMode: null});
 	drawnFigure = figure;
-	if(drawnFigure.getPath)
-	{
-		google.maps.event.addListener(drawnFigure.getPath(), 'set_at', updateFigure);
-		google.maps.event.addListener(drawnFigure.getPath(), 'insert_at', updateFigure);
-	}
-	else if(drawnFigure.getBounds)
-		google.maps.event.addListener(drawnFigure, 'bounds_changed', updateFigure);
+	google.maps.event.addListener(drawnFigure.getPath(), 'set_at', updateFigure);
+	google.maps.event.addListener(drawnFigure.getPath(), 'insert_at', updateFigure);
 	if(!isDefaultFigure)
 		updateFigure();
 }
@@ -46,22 +41,10 @@ function figureOnDraw(figure)
 function updateFigure()
 {
 	var coords = [];
-	if(drawnFigure.getPath)
+	var vertexes = drawnFigure.getPath().getArray();
+	for(var i=0; i<vertexes.length; i++)
 	{
-		var vertexes = drawnFigure.getPath().getArray();
-		for(var i=0; i<vertexes.length; i++)
-		{
-			coords.push([vertexes[i].lng(), vertexes[i].lat()]);
-		}
-	}
-	else if(drawnFigure.getBounds)
-	{
-		var ne = drawnFigure.getBounds().getNorthEast();
-		var sw = drawnFigure.getBounds().getSouthWest();
-		coords.push([sw.lng(), ne.lat()]);
-		coords.push([ne.lng(), ne.lat()]);
-		coords.push([ne.lng(), sw.lat()]);
-		coords.push([sw.lng(), ne.lat()]);
+		coords.push([vertexes[i].lng(), vertexes[i].lat()]);
 	}
 	if(coords)
 		updateOpenerCoords(coords);
@@ -95,19 +78,13 @@ $(document).ready(function() {
 	initLatLngControl(Map);
 
 	drawingManager = new google.maps.drawing.DrawingManager({
-		drawingMode: google.maps.drawing.OverlayType.POLYGON,
+		drawingMode: google.maps.drawing.OverlayType.POLYLINE,
 		drawingControlOptions: {
-			//position: google.maps.ControlPosition.TOP_CENTER,
 			drawingModes: [
-				google.maps.drawing.OverlayType.POLYGON,
-				google.maps.drawing.OverlayType.RECTANGLE
+				google.maps.drawing.OverlayType.POLYLINE
 			]
 		},	
-		polygonOptions: {
-			strokeWeight: 2,
-			editable: true
-		},
-		rectangleOptions: {
+		polylineOptions: {
 			strokeWeight: 2,
 			editable: true
 		}
@@ -126,7 +103,7 @@ $(document).ready(function() {
 		}
 		if(coords)
 		{
-			var figure = new google.maps.Polygon({
+			var figure = new google.maps.Polyline({
 				path: coords,
 				strokeWeight: 2,
 				editable: true

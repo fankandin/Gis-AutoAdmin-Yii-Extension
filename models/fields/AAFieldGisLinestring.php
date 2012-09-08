@@ -63,11 +63,11 @@ class AAFieldGisLinestring extends AAField
 			$coords = $i+1<$n ? $defaultCoords[$i] : null;
 			$tagOptions['id'] = "{$inputName}[lon][{$i}]";
 			$tagOptions['tabindex']++;
-			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Longitude)'), $tagOptions['id']);
+			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Lon)'), $tagOptions['id']);
 			echo CHtml::textField($tagOptions['id'], ($coords ? $coords->x : null), $tagOptions);
 			$tagOptions['id'] = "{$inputName}[lat][{$i}]";
 			$tagOptions['tabindex']++;
-			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Latitude)'), $tagOptions['id']);
+			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Lat)'), $tagOptions['id']);
 			echo CHtml::textField($tagOptions['id'], ($coords ? $coords->y : null), $tagOptions);
 			echo CHtml::tag('span', array('class'=>'delrow', 'title'=>Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Delete this row')), '');
 			echo CHtml::closeTag('li');
@@ -86,7 +86,7 @@ class AAFieldGisLinestring extends AAField
 				'class' => 'indmap',
 				'id'	=> "{$inputName}_indmap",
 				'title' => Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map'),
-				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-".strtolower(substr($this->type, 3)).".html#'+this.id, 'w{$this->type}Map', 'width=700,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
+				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-".strtolower(substr($this->type, 3)).".html#'+this.id, 'w{$this->type}Map', 'width=750,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
 			), '');
 		echo CHtml::closeTag('div');
 

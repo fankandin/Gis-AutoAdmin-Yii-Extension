@@ -39,52 +39,48 @@ $(document).ready(function() {
 	backupCoords()
 	$('#undo').click(undoCoords);
 
-	var center;
-	var defCoords = false;
 	if($srid.val() == '4326')
 	{
 		var lat = $lat.val();
 		var lon = $lon.val();
 		if(lat <= 360 || Math.abs(lat) <= 180 && lon <= 360 || Math.abs(lon) <= 180)
 		{
-			center = new google.maps.LatLng(lat, lon);
-			defCoords = true;
+			initCenterPoint(lat, lon);
 		}
 	}
-	if(!center)
-		center = new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
 	Map = new google.maps.Map(document.getElementById('map'), {
-			center: center,
+			center: centerPoint,
 			zoom: 5,
 			mapTypeId: google.maps.MapTypeId['TERRAIN']
 		});
 	initLatLngControl(Map);
-	if(defCoords)
-	{
-		var pointOpts = {
-			position: center,
-			title: 'Point is here',
-			draggable: true
-		};
-		var gMarker = new google.maps.Marker(pointOpts);
-		gMarker.setMap(Map);
-	}
-
 	geocoder = new google.maps.Geocoder();
-	//Add dragging event listeners.
+
+	var pointOpts = {
+		position: centerPoint,
+		title: 'Point is here',
+		draggable: true
+	};
+	var gMarker = new google.maps.Marker(pointOpts);
+	gMarker.setMap(Map);
+
 	google.maps.event.addListener(gMarker, 'dragstart', function() {
-		updateMarkerAddress('Dragging...');
-	});
-	google.maps.event.addListener(gMarker, 'drag', function() {
-		updateMarkerStatus('Dragging...');
+		$('#curpos').attr('id', 'markerpos');
 		updateMarkerPosition(gMarker.getPosition());
 	});
+	google.maps.event.addListener(gMarker, 'drag', function() {
+		var markerPos = gMarker.getPosition();
+		var $tds = $('#markerpos td');
+		$tds.first().html(markerPos.lat().toFixed(6));
+		$tds.last().html(markerPos.lng().toFixed(6));
+		updateMarkerPosition(markerPos);
+	});
 	google.maps.event.addListener(gMarker, 'dragend', function() {
-		updateMarkerStatus('Drag ended');
 		var pos = gMarker.getPosition();
 		geocodePosition(pos);
 		$lat.val(pos.lat());
 		$lon.val(pos.lng());
 		$srid.val('4326');
+		$('#markerpos').attr('id', 'curpos');
 	});
 });

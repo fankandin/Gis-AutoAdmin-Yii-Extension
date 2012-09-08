@@ -1,7 +1,8 @@
 var Map;
 var geocoder;
 var backupData;
-google.load('maps', '3', {'other_params': 'sensor=false'});
+var centerPoint;
+google.load('maps', '3', {'other_params': 'sensor=false&libraries=drawing'});
 
 var $inputs = window.opener.$('[id="'+ document.location.hash.substr(1) +'"]').parents('.item').find('input');
 var $srid = $inputs.filter('[name$="[srid]"]');
@@ -18,7 +19,9 @@ function initLatLngControl(map)
 	LatLngControl.prototype = new google.maps.OverlayView();
 	LatLngControl.prototype.draw = function() {};
 	LatLngControl.prototype.updatePosition = function(latLng) {
-		$('#latlng-control').html(latLng ? 'Lat: '+ latLng.lat().toFixed(5) +'<br/>Lon: '+ latLng.lng().toFixed(5) : '');
+		var $tds = $('#curpos td');
+		$tds.first().html(latLng ? latLng.lat().toFixed(6) : '');
+		$tds.last().html(latLng ? latLng.lng().toFixed(6) : '');
 	};
 	var obj = new LatLngControl(map);
 	//google.maps.event.addListener(Map, 'mouseover', function(mEvent) {latLngControl.set('visible', true);});
@@ -26,5 +29,22 @@ function initLatLngControl(map)
 	google.maps.event.addListener(map, 'mousemove', function(mEvent) {obj.updatePosition(mEvent.latLng);});
 }
 
+function initCenterPoint(lat, lon)
+{
+	centerPoint = new google.maps.LatLng(lat, lon);
+}
+
+function testCoord(coord)
+{
+	return (coord != '' && (coord <= 360 || Math.abs(coord) <= 180));
+}
+
 $(document).ready(function() {
+	if(google.loader.ClientLocation)
+		initCenterPoint(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+	else if (navigator.geolocation.getCurrentPosition(function(position) {
+			initCenterPoint(position.coords.latitude, position.coords.longitude);
+		}));
+	else
+		initCenterPoint(50.95, 6.966667);
 });

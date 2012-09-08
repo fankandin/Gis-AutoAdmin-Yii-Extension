@@ -3,8 +3,10 @@
 #editform .item[class*="block_Gis"] input[name*="[lat]"], #editform .item[class*="block_Gis"] input[name*="[lon]"] {width: 20%; margin-left: 7px; margin-right: 20px;}
 #editform .item[class*="block_Gis"] input[name$="[srid]"] {width: 40px; margin-left: 7px; margin-right: 20px;}
 #editform .item[class*="block_Gis"] .indmap {background: url('../images/map-search.png') no-repeat; cursor: pointer; display: inline-block; width: 24px; height: 24px; overflow: hidden; vertical-align: middle;}
-#editform .item .coords {display: inline-block; width: 66%; max-height: 120px; overflow-y: scroll; border: 1px solid #c0c0c0; background: #fefefe; margin: 10px 0 0;}
-#editform .item .coords ol {margin: 0;}
+#editform .item .coords {display: inline-block; width: 70%; max-height: 120px; overflow-y: scroll; border: 1px solid #c0c0c0; background: #fefefe; margin: 10px 0 0;}
+#editform .item .coords ol {margin: 0; padding-left: 25px;}
+#editform .item .coords input[name] {width: 23%;}
+#editform .item label {font-size: 100%;}
 #editform .item .coords.opened {overflow-y: visible; max-height: none;}
 #editform .item .coords-row {border-bottom: 1px solid #e0e0e0;}
 #editform .item .collapse {display: inline-block; vertical-align: bottom; width: 16px; height: 16px; margin: 0 10px 0 5px; overflow: hidden; background: url('../images/collapse.png'); cursor: pointer;}

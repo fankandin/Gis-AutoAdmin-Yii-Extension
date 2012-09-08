@@ -70,11 +70,11 @@ class AAFieldGisPoint extends AAField implements AAIField
 
 		$defaultCoords = $this->value ? $this->value->get() : null;
 		$tagOptions['id'] = "{$inputName}[lon]";
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Longitude)'), $tagOptions['id']);
+		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Lon)'), $tagOptions['id']);
 		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->x : $this->defaultValue['lon']), $tagOptions);
 		$tagOptions['id'] = "{$inputName}[lat]";
 		$tagOptions['tabindex']++;
-		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Latitude)'), $tagOptions['id']);
+		echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Y (Lat)'), $tagOptions['id']);
 		echo CHtml::textField($tagOptions['id'], ($defaultCoords ? $defaultCoords->y : $this->defaultValue['lat']), $tagOptions);
 		$tagOptions['id'] = "{$inputName}[srid]";
 		unset($tagOptions['tabindex']);
@@ -84,7 +84,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 				'class' => 'indmap',
 				'id'	=> "{$inputName}_indmap",
 				'title' => Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'Indicate on the map'),
-				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-".strtolower(substr($this->type, 3)).".html#'+this.id, 'w{$this->type}Map', 'width=700,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
+				'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-".strtolower(substr($this->type, 3)).".html#'+this.id, 'w{$this->type}Map', 'width=750,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
 			), '');
 
 		return ob_get_clean();
