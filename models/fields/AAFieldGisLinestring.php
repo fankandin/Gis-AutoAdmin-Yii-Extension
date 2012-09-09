@@ -53,14 +53,14 @@ class AAFieldGisLinestring extends AAField
 			$tagOptions['disabled'] = true;
 		$tagOptions['pattern'] = '[0-9]+(\.[0-9]+)?';
 
-		$defaultCoords = $this->value ? $this->value->get() : null;
+		$defaultCoords = $this->value ? $this->value->get(true) : null;
 		$n = count($defaultCoords);
 		echo CHtml::openTag('div', array('class'=>'coords'));
 		echo CHtml::openTag('ol');
-		for($i=0; $i<$n; $i++)
+		for($i=0; $i<=$n; $i++)
 		{
 			echo CHtml::openTag('li', array('class'=>'coords-row', 'row-i'=>$i));
-			$coords = $i+1<$n ? $defaultCoords[$i] : null;
+			$coords = $i<$n ? $defaultCoords[$i] : null;
 			$tagOptions['id'] = "{$inputName}[lon][{$i}]";
 			$tagOptions['tabindex']++;
 			echo CHtml::label(Yii::t(AutoAdminEGis::tCategoryConvert('gisFields'), 'X (Lon)'), $tagOptions['id']);
@@ -95,14 +95,22 @@ class AAFieldGisLinestring extends AAField
 
 	public function loadFromForm($formData)
 	{
-		if(!isset($formData[$this->name]['lat']) || !isset($formData[$this->name]['lon']))
+		if(!isset($formData[$this->name]['lon']) || !isset($formData[$this->name]['lat']) || !is_array($formData[$this->name]['lon']) || !is_array($formData[$this->name]['lat']))
 		{
 			$this->value = null;
 		}
 		else
 		{
-			$this->value = new EGeoPoint();
-			$this->value->set(new EGeoCoords($formData[$this->name]['lon'], $formData[$this->name]['lat']));
+			if(!$this->value)	//We should have an opportunity to override GeoObject type in childs.
+				$this->value = new EGeoLinestring();
+			foreach($formData[$this->name]['lon'] as $i=>$lon)
+			{
+				if(!isset($formData[$this->name]['lat'][$i]))
+					continue;
+				$lat = $formData[$this->name]['lat'][$i];
+				if($lon !== '' && $lat !== '' && is_numeric($lon) && is_numeric($lat))
+					$this->value->set(new EGeoCoords($lon, $lat));
+			}
 			if(!empty($formData[$this->name]['srid']))
 				$this->value->setSrid($formData[$this->name]['srid']);
 		}
@@ -123,9 +131,7 @@ class AAFieldGisLinestring extends AAField
 
 	public function validateValue($value)
 	{
-		if(!parent::validateValue($value))
-			return false;
-		return true;
+		return ($value && $value->test());
 	}
 
 	public function modifySqlQuery()

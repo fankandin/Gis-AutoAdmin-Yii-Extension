@@ -120,9 +120,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 
 	public function validateValue($value)
 	{
-		if(!parent::validateValue($value))
-			return false;
-		return true;
+		return ($value && $value->test());
 	}
 
 	public function modifySqlQuery()

@@ -63,8 +63,9 @@ abstract class EGeo
 
 	/**
 	 * Returns the coordinates (internally stored).
+	 * @param mixed $params Any specific param for child overloadings.
 	 */
-	public function get()
+	public function get($params=null)
 	{
 		return $this->coordinates;
 	}
@@ -106,6 +107,30 @@ abstract class EGeo
 	public function getSrid()
 	{
 		return $this->srid;
+	}
+
+	/**
+	 * Checks whether the object is completed with sufficient and correct coordinates.
+	 * @return bool Whether the object is completed with sufficient and correct coordinates.
+	 */
+	abstract public function test();
+
+	/**
+	 * Checks whether the coordinate is a correct one in current $this->srid projection.
+	 * The function returns TRUE in any occasions if it doesn't know an SRID.
+	 * @param int|float $coord Numeric coordinate.
+	 * @return bool Whether the coordinate is a correct one in current $this->srid projection.
+	 * @todo Tests for more SRIDs.
+	 */
+	public function testCoord($coord)
+	{
+		switch($this->srid)
+		{
+			case 4326:
+				return ($coord != '' && ($coord <= 360 || abs($coord) <= 180));
+			default:
+				return true;
+		}
 	}
 
 	/**

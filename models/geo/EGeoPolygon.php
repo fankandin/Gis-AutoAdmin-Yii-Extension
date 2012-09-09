@@ -13,24 +13,44 @@ class EGeoPolygon extends EGeo
 
 	public function set($coords)
 	{
-		if(!is_array($coords))
-			throw new EGeoException('Invalid argument. Must be an array of EGeoCoords objects.');
-		elseif(count($coords)<4)
-			throw new EGeoException('Invalid argument. Must be an array of at least 4 EGeoCoords objects (3 vertexes).');
-		else
+		if($coords instanceof EGeoCoords)	//step-by-step addition
+			$this->coordinates[] = $coords;
+		elseif(is_array($coords) && count($coords)>=3)	//set at once
 		{
-			$this->coordinates = array();
 			foreach($coords as $coord)
-			if($coord instanceof EGeoCoords)
-				$this->coordinates[] = $coord;
-			else
-				throw new EGeoException('Invalid argument. Each element must be an instance of the EGeoCoords class.');
+				$this->set($coord);
 		}
+		else
+			throw new EGeoException('Invalid argument. Must be an array of EGeoCoords objects.');
+	}
+
+	/**
+	 * Returns the coordinates (internally stored).
+	 * @param bool $unclose Whether to return enclosed path or remove the last vertex which is equal to the first one.
+	 */
+	public function get($unclose=false)
+	{
+		return $unclose ? array_splice($this->coordinates, 0, -1): $this->coordinates;
+	}
+
+	public function test()
+	{
+		if(isset($this->coordinates) && count($this->coordinates) >= 4)
+		{
+			foreach($this->coordinates as $coord)
+			{
+				if(!($coord instanceof EGeoCoords && $this->testCoord($coord->x) && $this->testCoord($coord->y)))
+					return false;
+			}
+			if($this->coordinates[0] == end($this->coordinates))
+				return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Does not support embedded polygons.
-	 * @todo preg_match has a problem
+	 * @todo preg_match seems having a problem.
 	 */
 	public function loadFromWKT($wkt)
 	{
@@ -80,5 +100,13 @@ class EGeoPolygon extends EGeo
 				'type' => 'Polygon',
 				'coordinates' => $coords
 			));
+	}
+
+	/**
+	 * Adds the last vertex to the coordinates that is equal to the first one.
+	 */
+	public function closePath()
+	{
+		$this->set($this->coordinates[0]);
 	}
 }

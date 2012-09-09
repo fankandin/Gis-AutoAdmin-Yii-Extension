@@ -13,19 +13,29 @@ class EGeoLinestring extends EGeo
 
 	public function set($coords)
 	{
-		if(!is_array($coords))
-			throw new EGeoException('Invalid argument. Must be an array of EGeoCoords objects.');
-		elseif(count($coords)<2)
-			throw new EGeoException('Invalid argument. Must be an array of at least 2 EGeoCoords objects (2 points).');
-		else
+		if($coords instanceof EGeoCoords)	//step-by-step addition
+			$this->coordinates[] = $coords;
+		elseif(is_array($coords) && count($coords)>=2)	//set at once
 		{
-			$this->coordinates = array();
 			foreach($coords as $coord)
-			if($coord instanceof EGeoCoords)
-				$this->coordinates[] = $coord;
-			else
-				throw new EGeoException('Invalid argument. Each element must be an instance of the EGeoCoords class.');
+				$this->set($coord);
 		}
+		else
+			throw new EGeoException('Invalid argument. Must be an array of EGeoCoords objects.');
+	}
+
+	public function test()
+	{
+		if(isset($this->coordinates) && count($this->coordinates) >= 2)
+		{
+			foreach($this->coordinates as $coord)
+			{
+				if(!($coord instanceof EGeoCoords && $this->testCoord($coord->x) && $this->testCoord($coord->y)))
+					return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public function loadFromWKT($wkt)

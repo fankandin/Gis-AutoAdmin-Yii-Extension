@@ -19,6 +19,16 @@ class EGeoPoint extends EGeo
 			throw new EGeoException('Invalid argument. Must be an instance of the EGeoCoords class.');
 	}
 
+	public function test()
+	{
+		if(isset($this->coordinates) && $this->coordinates instanceof EGeoCoords)
+		{
+			if($this->testCoord($this->coordinates->x) && $this->testCoord($this->coordinates->y))
+				return true;
+		}
+		return false;
+	}
+
 	public function loadFromWKT($wkt)
 	{
 		if(false === ($this->coordinates = self::parseWKT($wkt)))

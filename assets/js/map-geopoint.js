@@ -43,9 +43,9 @@ $(document).ready(function() {
 	{
 		var lat = $lat.val();
 		var lon = $lon.val();
-		if(lat <= 360 || Math.abs(lat) <= 180 && lon <= 360 || Math.abs(lon) <= 180)
+		if(testCoord(lat) && testCoord(lon))
 		{
-			initCenterPoint(lat, lon);
+			initCenterPoint(lon, lat);
 		}
 	}
 	Map = new google.maps.Map(document.getElementById('map'), {

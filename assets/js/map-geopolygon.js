@@ -4,7 +4,10 @@ var isDefaultFigure = false;
 
 function updateOpenerCoords(coords)
 {
-	//console.dir(coords)
+	var $coords = $srid.parents('.item').find('.coords');
+	window.opener.EGisRemoveCoordsRow($coords, -1);
+	for(var i=0; i<coords.length; i++)
+		window.opener.EGisAddCoordsRow($coords, coords[i][0], coords[i][1]);
 	$srid.val('4326');
 }
 
@@ -19,11 +22,7 @@ function backupCoords()
 
 function undoCoords()
 {
-	for(var i=0; i<$lon.length; i++)
-	{
-		$lon[i].value = backupData[i][0];
-		$lat[i].value = backupData[i][1];
-	}
+	updateOpenerCoords(backupData);
 }
 
 function figureOnDraw(figure)
@@ -61,7 +60,7 @@ function updateFigure()
 		coords.push([sw.lng(), ne.lat()]);
 		coords.push([ne.lng(), ne.lat()]);
 		coords.push([ne.lng(), sw.lat()]);
-		coords.push([sw.lng(), ne.lat()]);
+		coords.push([sw.lng(), sw.lat()]);
 	}
 	if(coords)
 		updateOpenerCoords(coords);
@@ -70,7 +69,12 @@ function updateFigure()
 function removeFigure()
 {
 	if(drawnFigure)
+	{
 		drawnFigure.setMap(null);
+		var $coords = $srid.parents('.item').find('.coords');
+		window.opener.EGisRemoveCoordsRow($coords, -1);
+	}
+	drawingManager.setOptions({drawingMode: google.maps.drawing.OverlayType.POLYGON});
 }
 
 $(document).ready(function() {
@@ -82,9 +86,9 @@ $(document).ready(function() {
 	{
 		var lat = $lat.first().val();
 		var lon = $lon.first().val();
-		if(lat <= 360 || Math.abs(lat) <= 180 && lon <= 360 || Math.abs(lon) <= 180)
+		if(testCoord(lat) && testCoord(lon))
 		{
-			initCenterPoint(lat, lon);
+			initCenterPoint(lon, lat);
 		}
 	}
 	Map = new google.maps.Map(document.getElementById('map'), {
@@ -124,10 +128,11 @@ $(document).ready(function() {
 				coords.push(new google.maps.LatLng($lat[i].value, $lon[i].value));
 			}
 		}
-		if(coords)
+		if(coords.length)
 		{
+			coords.push(new google.maps.LatLng($lat[0].value, $lon[0].value));
 			var figure = new google.maps.Polygon({
-				path: coords,
+				paths: coords,
 				strokeWeight: 2,
 				editable: true
 			});

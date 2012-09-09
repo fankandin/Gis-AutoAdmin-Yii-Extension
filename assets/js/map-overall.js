@@ -26,10 +26,10 @@ function initLatLngControl(map)
 	var obj = new LatLngControl(map);
 	//google.maps.event.addListener(Map, 'mouseover', function(mEvent) {latLngControl.set('visible', true);});
 	google.maps.event.addListener(map, 'mouseout', function(mEvent) {obj.updatePosition(null);});
-	google.maps.event.addListener(map, 'mousemove', function(mEvent) {obj.updatePosition(mEvent.latLng);});
+	google.maps.event.addListener(map, 'mousemove', function(mEvent) {obj.updatePosition(mEvent.latLng)});
 }
 
-function initCenterPoint(lat, lon)
+function initCenterPoint(lon, lat)
 {
 	centerPoint = new google.maps.LatLng(lat, lon);
 }
@@ -41,10 +41,10 @@ function testCoord(coord)
 
 $(document).ready(function() {
 	if(google.loader.ClientLocation)
-		initCenterPoint(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+		initCenterPoint(google.loader.ClientLocation.longitude, google.loader.ClientLocation.latitude);
 	else if (navigator.geolocation.getCurrentPosition(function(position) {
-			initCenterPoint(position.coords.latitude, position.coords.longitude);
+			initCenterPoint(position.coords.longitude, position.coords.latitude);
 		}));
 	else
-		initCenterPoint(50.95, 6.966667);
+		initCenterPoint(6.966667, 50.95);
 });

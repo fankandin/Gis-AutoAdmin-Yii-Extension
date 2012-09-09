@@ -29,44 +29,11 @@ class AAFieldGisPolygon extends AAFieldGisLinestring
 
 	public function loadFromForm($formData)
 	{
-		if(!isset($formData[$this->name]['lat']) || !isset($formData[$this->name]['lon']))
+		$this->value = new EGeoPolygon();
+		parent::loadFromForm($formData);
+		if($this->value)
 		{
-			$this->value = null;
+			$this->value->closePath();
 		}
-		else
-		{
-			$this->value = new EGeoPoint();
-			$this->value->set(new EGeoCoords($formData[$this->name]['lon'], $formData[$this->name]['lat']));
-			if(!empty($formData[$this->name]['srid']))
-				$this->value->setSrid($formData[$this->name]['srid']);
-		}
-	}
-
-	public function valueForSql()
-	{
-		$value = parent::valueForSql();
-		if(!($value instanceof CDbExpression))
-		{
-			if(!$value)
-				$value = new CDbExpression("NULL");
-			else
-				$value = new CDbExpression(AutoAdminEGis::$sql->geomFromText($value->exportAsWKT(), $value->getSrid()));
-		}
-		return $value;
-	}
-
-	public function validateValue($value)
-	{
-		if(!parent::validateValue($value))
-			return false;
-		return true;
-	}
-
-	public function modifySqlQuery()
-	{
-		return array('select' => array(
-				new CDbExpression(AutoAdminEGis::$sql->asText("{$this->tableName}.{$this->name}")." AS {$this->name}"),
-				new CDbExpression(AutoAdminEGis::$sql->getSrid("{$this->tableName}.{$this->name}")." AS {$this->name}_srid"),
-			));
 	}
 }
