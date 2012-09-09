@@ -4,7 +4,7 @@
  *
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-class EGeoGisPgsql implements EGeoIGisSQL
+class EGeoGisPgsql implements EGeoIGisSql
 {
 	public function getSrid($field)
 	{

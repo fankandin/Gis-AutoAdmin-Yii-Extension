@@ -6,9 +6,9 @@
  * 
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-class AAFieldGisPolygon extends AAFieldGisLinestring
+class AAFieldGispolygon extends AAFieldGislinestring
 {
-	public $type='GisPolygon';
+	public $type='gispolygon';
 
 	public function loadFromSql($queryValue)
 	{

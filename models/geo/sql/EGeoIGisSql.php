@@ -4,7 +4,7 @@
  * Interface for GIS SQL drivers.
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-interface EGeoIGisSQL
+interface EGeoIGisSql
 {
 	/**
 	 * Generates a specific function for getting SRID of a geometry/geography field.

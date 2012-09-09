@@ -58,7 +58,7 @@ function EGisCoordsRowAttrUpdate($obj, attr, se, re)
 }
 
 $(document).ready(function(){
-	$('#editform .item[class*="block_Gis"] .collapse').click(function() {
+	$('#editform .item[class*="block_gis"] .collapse').click(function() {
 		$(this).toggleClass('opened').prev('.coords').toggleClass('opened');
 	});
 	$('#editform .item .coords .delrow').click(function() {

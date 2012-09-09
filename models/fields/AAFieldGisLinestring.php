@@ -6,9 +6,9 @@
  * 
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-class AAFieldGisLinestring extends AAField
+class AAFieldGislinestring extends AAField
 {
-	public $type='GisLinestring';
+	public $type='gislinestring';
 
 	public function completeOptions()
 	{

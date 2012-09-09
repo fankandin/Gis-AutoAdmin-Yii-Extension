@@ -4,9 +4,9 @@
  *
  * @author Alexander Palamarchuk <a@palamarchuk.info>
  */
-class AAFieldGisPoint extends AAField implements AAIField
+class AAFieldGispoint extends AAField implements AAIField
 {
-	public $type='GisPoint';
+	public $type='gispoint';
 
 	public function completeOptions()
 	{
