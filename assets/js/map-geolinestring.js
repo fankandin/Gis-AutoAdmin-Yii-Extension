@@ -76,7 +76,7 @@ $(document).ready(function() {
 	}
 	Map = new google.maps.Map(document.getElementById('map'), {
 			center: centerPoint,
-			zoom: 12,
+			zoom: 10,
 			mapTypeId: google.maps.MapTypeId['TERRAIN']
 		});
 	initLatLngControl(Map);

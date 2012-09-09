@@ -66,7 +66,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 		echo CHtml::tag('b', array(), $this->label);
 		if($this->isReadonly)
 			$tagOptions['disabled'] = true;
-		$tagOptions['pattern'] = '[0-9]+(\.[0-9]+)?';
+		$tagOptions['pattern'] = '\-?[0-9]+(\.[0-9]+)?';
 
 		$defaultCoords = $this->value ? $this->value->get() : null;
 		$tagOptions['id'] = "{$inputName}[lon]";
@@ -92,7 +92,7 @@ class AAFieldGisPoint extends AAField implements AAIField
 
 	public function loadFromForm($formData)
 	{
-		if(!isset($formData[$this->name]['lat']) || !isset($formData[$this->name]['lon']))
+		if(!isset($formData[$this->name]['lat']) || !isset($formData[$this->name]['lon']) || $formData[$this->name]['lon'] === '' || $formData[$this->name]['lat'] === '')
 		{
 			$this->value = null;
 		}

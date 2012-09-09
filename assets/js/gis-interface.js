@@ -18,10 +18,11 @@ function EGisAddCoordsRow($coords, x, y)
 	//now updating tabindexes of following fields
 	$ol.parents('.item').next('.item').find('[tabindex]').each(EGisUpdateTabindex);
 
-	if(x != 'undefined')
+	if(x != undefined)
 		$liLast.prev().find('input[name*="[lon]"]').val(x);	//it's important to set value of a previous one: the last input pair should be empty
-	if(y != 'undefined')
+	if(y != undefined)
 		$liLast.prev().find('input[name*="[lat]"]').val(y);
+	$liLast.find('input[name*="[lon]"],input[name*="[lat]"]').val('');
 }
 function EGisRemoveCoordsRow($coords, i)
 {

@@ -93,8 +93,14 @@ $(document).ready(function() {
 	}
 	Map = new google.maps.Map(document.getElementById('map'), {
 			center: centerPoint,
-			zoom: 12,
-			mapTypeId: google.maps.MapTypeId['TERRAIN']
+			zoom: 10,
+			mapTypeId: google.maps.MapTypeId['TERRAIN'],
+			scaleControl: true,
+			mapTypeControl: true,
+			streetViewControl: false,
+			scaleControl: true,
+			panControl: true,
+			overviewMapControl: false
 		});
 	initLatLngControl(Map);
 

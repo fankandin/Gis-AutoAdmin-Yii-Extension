@@ -54,9 +54,9 @@ class EGeoPolygon extends EGeo
 	 */
 	public function loadFromWKT($wkt)
 	{
-		if(!preg_match_all('/^POLYGON\(\(([\d\s\,\.]*)\)\,?(\(([\d\s\,\.]*)\)\,?)*\)/i', $wkt, $data))
+		if(!preg_match_all('/^POLYGON\(\(([\-\d\s\,\.]*)\)\,?(\(([\-\d\s\,\.]*)\)\,?)*\)/i', $wkt, $data))
 		{
-			throw new GeometryException('Incorrect Geometry Type in WKT data for Polygon.');
+			throw new EGeoException('Incorrect Geometry Type in WKT data for Polygon.');
 		}
 		$pairs = preg_split('/\,\s*/', $data[1][0]);
 		foreach($pairs as $pair)
@@ -70,7 +70,7 @@ class EGeoPolygon extends EGeo
 	{
 		$data = json_decode($geoJson, true);
 		if(empty($data['type']) || !isset($data['coordinates'][0]) || $data['type'] != 'Polygon')
-			throw new GeometryException('Invalid geometry type in GeoJson data for Polygon.');
+			throw new EGeoException('Invalid geometry type in GeoJson data for Polygon.');
 
 		foreach($data['coordinates'][0] as $coords)
 		{

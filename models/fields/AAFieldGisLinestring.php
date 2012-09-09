@@ -51,7 +51,7 @@ class AAFieldGisLinestring extends AAField
 		echo CHtml::tag('b', array(), $this->label);
 		if($this->isReadonly)
 			$tagOptions['disabled'] = true;
-		$tagOptions['pattern'] = '[0-9]+(\.[0-9]+)?';
+		$tagOptions['pattern'] = '\-?[0-9]+(\.[0-9]+)?';
 
 		$defaultCoords = $this->value ? $this->value->get(true) : null;
 		$n = count($defaultCoords);
