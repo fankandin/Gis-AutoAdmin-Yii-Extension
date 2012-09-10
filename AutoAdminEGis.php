@@ -44,7 +44,11 @@ class AutoAdminEGis implements AutoAdminIExtension
 		Yii::import(self::$extPath.'.models.geo.*');
 		Yii::import(self::$extPath.'.models.geo.sql.*');
 		self::$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias(self::$extPath.'.assets'));
-		Yii::app()->clientScript->registerCssFile(self::$assetPath.'/css/gisfields.css');
+		$action = Yii::app()->request->getParam('action', 'list');
+		if(in_array($action, array('add', 'edit')))
+			Yii::app()->clientScript->registerCssFile(self::$assetPath.'/css/egis-edit.css');
+		elseif($action == 'list')
+			Yii::app()->clientScript->registerCssFile(self::$assetPath.'/css/egis-list.css');
 
 		list($dbDriver, ) = explode(':', Yii::app()->db->connectionString);
 		self::$sql = EGeoGisSql::get($dbDriver);

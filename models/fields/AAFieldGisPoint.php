@@ -49,10 +49,20 @@ class AAFieldGispoint extends AAField implements AAIField
 
 	public function printValue()
 	{
+		static $i = 0;
 		if($this->value)
 		{
 			$coords = $this->value->get();
-			return "[{$coords->lon}; {$coords->lat}]";
+			$id = (string)($this->name).$i++;
+			$result = CHtml::link('', '', array(
+					'class'	=> 'clicon',
+					'title'	=> 'View on map',
+					'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-view.html#".$id."', 'w{$this->type}Map', 'width=750,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
+				));
+			$result .= CHtml::tag('div', array('id'=>$id, 'class'=>'hdata'), $this->value->exportAsGeoJson());
+			$result .= CHtml::tag('div', array('id'=>$id.'_srid', 'class'=>'hdata'), $this->value->getSrid());
+			$result .= CHtml::tag('small', array(), "[{$coords->lon}; {$coords->lat}]");
+			return $result;
 		}
 		else
 			return null;

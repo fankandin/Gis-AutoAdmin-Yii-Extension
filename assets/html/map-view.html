@@ -3,19 +3,18 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="language" content="en"/>
-	<title>Indicate polygon on map</title>
+	<title>Indicate point on map</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	<link rel="stylesheet" type="text/css" href="../css/map.css"/>
 
 	<script type="text/javascript" src="../js/map-overall.js"></script>
-	<script type="text/javascript" src="../js/map-geopolygon.js"></script>
+	<script type="text/javascript" src="../js/map-view.js"></script>
 </head>
 <body>
 	<div id="menu">
-		<span id="remove" title="Remove figure" class="menu-item"></span>
 		<div id="control" class="menu-item">
-			<table id="curpos"><tbody><tr><th>Lat:</th><td></td><th>Lon:</th><td></td></tr></tbody></table>
+			<table id="curpos" class="tcoords"><tbody><tr><th>Lat:</th><td></td><th>Lon:</th><td></td></tr></tbody></table>
 		</div>
 		<span id="undo" title="Undo" class="menu-item"></span>
 	</div>

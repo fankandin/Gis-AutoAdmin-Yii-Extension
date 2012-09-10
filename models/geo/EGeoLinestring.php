@@ -75,9 +75,9 @@ class EGeoLinestring extends EGeo
 	public function exportAsGeoJson()
 	{
 		$coords = array();
-		foreach($this->coordinates as $coords)
+		foreach($this->coordinates as $coord)
 		{
-			$coords[] = array($coords->x, $coords->y);
+			$coords[] = array($coord->x, $coord->y);
 		}
 		return json_encode(array(
 				'type' => 'LineString',

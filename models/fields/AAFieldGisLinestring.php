@@ -27,17 +27,31 @@ class AAFieldGislinestring extends AAField
 
 	public function printValue()
 	{
+		static $i = 0;
 		if($this->value)
 		{
 			$coords = $this->value->get();
-			$s = '';
-			foreach($coords as $coord)
+			$id = (string)($this->name).$i++;
+			$result = CHtml::link('', '', array(
+					'class'	=> 'clicon',
+					'title'	=> 'View on map',
+					'onclick' => "window.open('".AutoAdminEGis::$assetPath."/html/map-view.html#".$id."', 'w{$this->type}Map', 'width=750,height=600,scrollbars=0,toolbar=0,menubar=0,location=0,status=0,resizable=1');",
+				));
+			$result .= CHtml::tag('div', array('id'=>$id, 'class'=>'hdata'), $this->value->exportAsGeoJson());
+			$result .= CHtml::tag('div', array('id'=>$id.'_srid', 'class'=>'hdata'), $this->value->getSrid());
+			if(!isset($this->options['options']['showCoords']) || $this->options['options']['showCoords'])
 			{
-				$s .= "[{$coord->lon}; {$coord->lat}], ";
+				$s = '';
+				foreach($coords as $coord)
+				{
+					$s .= "[{$coord->lon}; {$coord->lat}], ";
+				}
+				if($s)
+					$s = '('.rtrim($s, ', ').')';
+				$result .= CHtml::tag('small', array(), $s);
 			}
-			if($s)
-				$s = '('.rtrim($s, ', ').')';
-			return $s;
+
+			return $result;
 		}
 		else
 			return null;

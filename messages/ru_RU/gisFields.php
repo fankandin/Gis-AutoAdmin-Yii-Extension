@@ -8,5 +8,5 @@ return array(
 	'The looping vertex which matches with the first one will be set automatically. Do not input it!' => 'Замыкающая (совпадающая с первой) вершина будет установлена автоматически. Не вводите её координаты!',
 	'Add a new row' => 'Добавить новый ряд',
 	'Delete this row' => 'Удалить ряд',
+	'View on map' => 'Просмотр на карте',
 );
-?>
