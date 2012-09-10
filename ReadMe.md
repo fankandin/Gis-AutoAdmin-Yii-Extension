@@ -40,6 +40,7 @@ $main['modules'] = array(
 		),
 	),
 );
+~~~
 
 ##Usage
 
@@ -48,55 +49,55 @@ You may try real working AutoAdmin CMS [here](http://palamarchuk.info/autoadmin/
 ###Geo point interface
 ~~~
 [php]
-	public function actionRuevents()
-	{
-		$this->module->tableName('geo_ruevents');
-		$this->module->setPK('id');
-		$this->module->fieldsConf(array(
-				array('title', 'string', 'What happened', array('show')),
-				array('when_happened', 'date', 'When happened', array('show')),
-				array('place', 'GisPoint', 'Where happened', array('show', 'null'))
-			));
-		$this->pageTitle = 'Russian historical events';
-		$this->module->sortDefault(array('when_happened'=>-1));
-		$this->module->process();
-	}
+public function actionRuevents()
+{
+	$this->module->tableName('geo_ruevents');
+	$this->module->setPK('id');
+	$this->module->fieldsConf(array(
+			array('title', 'string', 'What happened', array('show')),
+			array('when_happened', 'date', 'When happened', array('show')),
+			array('place', 'GisPoint', 'Where happened', array('show', 'null'))
+		));
+	$this->pageTitle = 'Russian historical events';
+	$this->module->sortDefault(array('when_happened'=>-1));
+	$this->module->process();
+}
 ~~~
 ![Illustration of geo point interface](http://palamarchuk.info/i/autoadmin/autoadmingis_sh1.jpg "")
 
 ###Geo polygon interface
 ~~~
 [php]
-	public function actionParanormals()
-	{
-		$this->module->tableName('geo_paranormals');
-		$this->module->setPK('id');
-		$this->module->fieldsConf(array(
-				array('title', 'string', 'Phenomena', array('show')),
-				array('zone', 'GisPolygon', 'Zone', array('show')),
-			));
-		$this->pageTitle = 'World paranormal zones';
-		$this->module->sortDefault(array('title'));
-		$this->module->process();
-	}
+public function actionParanormals()
+{
+	$this->module->tableName('geo_paranormals');
+	$this->module->setPK('id');
+	$this->module->fieldsConf(array(
+			array('title', 'string', 'Phenomena', array('show')),
+			array('zone', 'GisPolygon', 'Zone', array('show')),
+		));
+	$this->pageTitle = 'World paranormal zones';
+	$this->module->sortDefault(array('title'));
+	$this->module->process();
+}
 ~~~
 ![Illustration of geo polygon interface](http://palamarchuk.info/i/autoadmin/autoadmingis_sh2.jpg "")
 
 ###Geo line interface
 ~~~
 [php]
-	public function actionExpeditions()
-	{
-		$this->module->tableName('geo_expeditions');
-		$this->module->setPK('id');
-		$this->module->fieldsConf(array(
-				array('title', 'string', 'Voyage', array('show')),
-				array('route', 'GisLinestring', 'Route', array('show'))
-			));
-		$this->pageTitle = 'Famous historical expeditions';
-		$this->module->sortDefault(array('title'));
-		$this->module->process();
-	}
+public function actionExpeditions()
+{
+	$this->module->tableName('geo_expeditions');
+	$this->module->setPK('id');
+	$this->module->fieldsConf(array(
+			array('title', 'string', 'Voyage', array('show')),
+			array('route', 'gislinestring', 'Route', array('show', 'options'=>array('showCoords'=>false)))
+		));
+	$this->pageTitle = 'Famous historical expeditions';
+	$this->module->sortDefault(array('title'));
+	$this->module->process();
+}
 ~~~
 ![Illustration of geo polyline interface](http://palamarchuk.info/i/autoadmin/autoadmingis_sh3.jpg "")
 
