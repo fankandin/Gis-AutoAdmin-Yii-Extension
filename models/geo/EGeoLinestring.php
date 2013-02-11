@@ -87,11 +87,12 @@ class EGeoLinestring extends EGeo
 
 	/**
 	 * Adds a new point to the geometry.
-	 * @param \EGeoCoords $coords Coordinates of point.
+	 * @param \EGeoCoords $coords Coordinates of a point.
+	 * @throws EGeoException
 	 */
-	public function addPoint($coords, $options)
+	public function addPoint($coords)
 	{
-		if(false === $coords || !($coordinate instanceof EGeoCoords))
+		if(false === $coords || !($coords instanceof EGeoCoords))
 			throw new EGeoException('Invalid point coordinates.');
 		array_push($this->coordinates, $coords);
 	}
@@ -109,7 +110,7 @@ class EGeoLinestring extends EGeo
 			$ar = explode('),(', $matches[1]);
 			foreach($ar as $lineCoords)
 			{
-				$line = new LineStringGeometry();
+				$line = new GeometryLinestring();
 				$line->loadFromWKT("LINESTRING({$lineCoords})");
 				$lines[] = $line;
 			}
